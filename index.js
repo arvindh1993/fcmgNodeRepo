@@ -5,7 +5,9 @@
  */
 const express = require("express");
 const path = require("path");
-var cors = require('cors')
+var cors = require('cors');
+var request = require('request'); 
+
 /**
  * App Variables
  */
@@ -19,9 +21,23 @@ app.use(cors());
 /**
  * Routes Definitions
  */
-app.get("/", (req, res) => {
-    res.status(200).send({resp:'WHATABYTE: Food For Devs'});
+var getApiCall = function getApiCall(cb){
+
+ var url ='https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY';
+  request(url, function (error, response, body) {
+    cb(error,response,body); //callback function
   });
+   
+}
+app.get('/',function(req,res) {
+  
+  var result = getApiCall(function(err,response,data){
+   if(!err){
+     res.send(data);   
+   }
+  });
+});
+
 /**
  * Server Activation
  */
